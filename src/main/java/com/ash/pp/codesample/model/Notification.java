@@ -6,7 +6,9 @@ public class Notification {
 
     private int employeeId;
 
-    private Notification notificationType;
+    private String notificationDate;
+
+    private NotificationType notificationType;
 
     public int getNotificationId() {
         return notificationId;
@@ -24,11 +26,19 @@ public class Notification {
         this.employeeId = employeeId;
     }
 
-    public Notification getNotificationType() {
+    public String getNotificationDate() {
+        return notificationDate;
+    }
+
+    public void setNotificationDate(String notificationDate) {
+        this.notificationDate = notificationDate;
+    }
+
+    public NotificationType getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(Notification notificationType) {
+    public void setNotificationType(NotificationType notificationType) {
         this.notificationType = notificationType;
     }
 }

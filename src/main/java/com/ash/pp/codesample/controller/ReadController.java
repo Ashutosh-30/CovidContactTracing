@@ -4,6 +4,7 @@ import com.ash.pp.codesample.model.Employee;
 import com.ash.pp.codesample.service.ReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,6 +18,21 @@ public class ReadController {
     @GetMapping(value="/getAllEmployees")
     public List<Employee> getAllEmployee() {
         return readService.getAllEmployees();
+    }
+
+    @GetMapping(value="/getEmployeesByFloor")
+    public List<Employee> getEmployeesByFloor(@RequestParam int floorNumber) {
+        return readService.getEmployeeListByFloor(floorNumber);
+    }
+
+    @GetMapping(value="/getDirectlyAffectedEmployees")
+    public List<Employee> getDirectlyAffectedEmployees(@RequestParam int employeeId) {
+        return readService.getDirectlyAffectedEmployees(employeeId);
+    }
+
+    @GetMapping(value="/getEmployeeById")
+    public Employee getEmployeeById(@RequestParam int employeeId) {
+        return readService.getEmployeeByEmpId(employeeId);
     }
 
     @GetMapping(value="/printSpiroPoints")

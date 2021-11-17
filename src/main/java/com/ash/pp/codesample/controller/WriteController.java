@@ -1,6 +1,6 @@
 package com.ash.pp.codesample.controller;
 
-import com.ash.pp.codesample.model.Employee;
+import com.ash.pp.codesample.model.*;
 import com.ash.pp.codesample.service.WriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +26,56 @@ public class WriteController {
         }
         else {
             return rowsInserted;
+        }
+    }
+
+    @PostMapping(path="insertMeetings", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public int insertMeetings(@RequestBody List<Meeting> meetingList) throws Exception {
+        int rowsInserted = writeService.insertMeetingList(meetingList);
+
+        if(rowsInserted == 0) {
+            throw new ServerException("Unable to persist meetings. Please check your input.");
+        }
+        else {
+            return rowsInserted;
+        }
+    }
+
+    @PostMapping(path="insertEmployeeMeetingInteractions", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public int insertEmployeeMeetingInteractions(@RequestBody List<EmployeeMeetingInteraction> employeeMeetingInteractionList) throws Exception {
+        int rowsInserted = writeService.insertEmployeeMeetingInteractionList(employeeMeetingInteractionList);
+
+        if(rowsInserted == 0) {
+            throw new ServerException("Unable to persist employee-meeting-interactions. Please check your input.");
+        }
+        else {
+            return rowsInserted;
+        }
+    }
+
+    @PostMapping(path="insertScans", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public int insertScans(@RequestBody List<Scan> scanList) throws Exception {
+        int rowsInserted = writeService.insertScanList(scanList);
+
+        if(rowsInserted == 0) {
+            throw new ServerException("Unable to persist scans. Please check your input.");
+        }
+        else {
+            return rowsInserted;
+        }
+    }
+
+    @PostMapping(path="insertTest", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ContactTracingResult insertTest(@RequestBody Test test) throws Exception {
+        ContactTracingResult contactTracingResult = null;
+
+        contactTracingResult = writeService.insertTest(test);
+
+        if(contactTracingResult == null) {
+            throw new ServerException("Unable to persist test. Please check your input.");
+        }
+        else {
+            return contactTracingResult;
         }
     }
 }

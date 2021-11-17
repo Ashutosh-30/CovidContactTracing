@@ -16,4 +16,24 @@ public class ReadService {
     public List<Employee> getAllEmployees() {
         return readDao.getAllEmployees();
     }
+
+    public Employee getEmployeeByEmpId(int employeeId) {
+        return readDao.getEmployeeById(employeeId);
+    }
+
+    public List<Employee> getEmployeeListByFloor(int floorNumber) {
+        return readDao.getEmployeeListByFloor(floorNumber);
+    }
+
+    public List<Employee> getDirectlyAffectedEmployees(int employeeId) {
+        return readDao.getDirectlyAffectedEmployeeList(employeeId);
+    }
+
+    public int getLastPKCase() {
+        return readDao.getLastPKCase();
+    }
+
+    public int getLastPKNotification() {
+        return readDao.getLastPKNotification();
+    }
 }
