@@ -1,6 +1,7 @@
 package com.ash.pp.codesample.dao;
 
 import com.ash.pp.codesample.model.Employee;
+import com.ash.pp.codesample.model.Symptom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReadDao {
@@ -102,4 +107,90 @@ public class ReadDao {
         return readJdbcTemplate.queryForObject(sql, Integer.class);
     }
 
+    public Map<Symptom, Integer> getSymptomIdMap() {
+        String sql = "select * from symptom";
+
+        return readJdbcTemplate.query(sql, (ResultSet rs) -> {
+            Map<Symptom,Integer> map = new HashMap<>();
+            while(rs.next()) {
+                map.put(Symptom.valueOf(rs.getString("symptom_description")), rs.getInt("symptom_id"));
+            }
+            return map;
+        });
+    }
+
+    public String getMostReportedSymptom() {
+        String sql = "select s.symptom_description, count(srs.symptom_id) as freq\n" +
+                "from self_report_symptom srs\n" +
+                "join symptom s on s.symptom_id = srs.symptom_id\n" +
+                "group by s.symptom_description\n" +
+                "order by freq desc\n" +
+                "limit 1;";
+
+        return readJdbcTemplate.query(sql, (ResultSet rs) -> {
+            String mostFreqSymptom = "";
+            while(rs.next()) {
+                mostFreqSymptom = (rs.getString("symptom_description"));
+            }
+            return mostFreqSymptom;
+        });
+    }
+
+    public Integer getMostInfectedFloor() {
+        String sql = "select e.employee_floor_number, count(e.employee_floor_number) as freq \n" +
+                "from positive_case pc\n" +
+                "join test t on t.test_id = pc.test_id\n" +
+                "join employee e on e.employee_id = t.employee_id\n" +
+                "group by e.employee_floor_number\n" +
+                "order by freq desc\n" +
+                "limit 1;";
+
+        return readJdbcTemplate.query(sql, (ResultSet rs) -> {
+            Integer mostInfectedFloor = 0;
+            while(rs.next()) {
+                mostInfectedFloor = (rs.getInt("employee_floor_number"));
+            }
+            return mostInfectedFloor;
+        });
+    }
+
+
+    public List<String> commonSymptomsAmongstInfectedEmployees() {
+
+        if(!viewExists("positive_employee_ids")) {
+            String viewSql = "create view positive_employee_ids as\n" +
+                    "select t.employee_id \n" +
+                    "from positive_case pc\n" +
+                    "join test t on t.test_id = pc.test_id;";
+
+            readJdbcTemplate.execute(viewSql);
+        }
+
+        String tableDivisionSql = "select distinct srs.symptom_id, s.symptom_description\n" +
+                "from self_report_symptom srs\n" +
+                "join symptom s on s.symptom_id = srs.symptom_id\n" +
+                "where not exists\n" +
+                "(select pei.employee_id\n" +
+                "from positive_employee_ids pei\n" +
+                "where pei.employee_id not in (select srs2.employee_id from self_report_symptom srs2 where srs2.symptom_id = srs.symptom_id)\n" +
+                ");";
+
+        return readJdbcTemplate.query(tableDivisionSql, (ResultSet rs) -> {
+            List<String> symptoms = new ArrayList<>();
+            while(rs.next()) {
+                symptoms.add(rs.getString("symptom_description"));
+            }
+            return symptoms;
+        });
+    }
+
+    public boolean viewExists(String viewName) {
+        String sql = "select count(*) \n" +
+                "from information_schema.tables \n" +
+                "where table_name = ?;";
+
+        int result = readJdbcTemplate.queryForObject(sql, Integer.class, viewName);
+
+        return result == 1;
+    }
 }

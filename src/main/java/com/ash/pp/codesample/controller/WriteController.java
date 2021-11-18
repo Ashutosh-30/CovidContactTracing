@@ -78,4 +78,16 @@ public class WriteController {
             return contactTracingResult;
         }
     }
+
+    @PostMapping(path="insertSelfReportSymptoms", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public int insertSelfReportedSymptom(@RequestBody List<SelfReportSymptom> selfReportSymptomList) throws Exception {
+        int rowsInserted = writeService.insertSelfReportSymptomList(selfReportSymptomList);
+
+        if(rowsInserted == 0) {
+            throw new ServerException("Unable to persist self report symptoms. Please check your input.");
+        }
+        else {
+            return rowsInserted;
+        }
+    }
 }

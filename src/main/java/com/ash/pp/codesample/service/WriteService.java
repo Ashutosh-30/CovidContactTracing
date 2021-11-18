@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WriteService {
@@ -92,5 +93,15 @@ public class WriteService {
         }
 
         return contactTracingResult;
+    }
+
+    public int insertHealthStatusList(List<HealthStatus> healthStatusList) {
+        return writeDao.insertHealthStatusList(healthStatusList);
+    }
+
+    public int insertSelfReportSymptomList(List<SelfReportSymptom> selfReportSymptomList) {
+        Map<Symptom,Integer> symptomToIdMap = readService.getSymptomIdMap();
+
+        return writeDao.insertSelfReportSymptomList(selfReportSymptomList, symptomToIdMap);
     }
 }

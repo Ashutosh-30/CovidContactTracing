@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WriteDao {
@@ -173,6 +174,54 @@ public class WriteDao {
         insertCase(positiveCase);
 
         insertNotificationList(notificationList);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int insertHealthStatusList(List<HealthStatus> healthStatusList) {
+        String sql = "insert into health_status values(?,?,?,?)";
+
+        writeJdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                HealthStatus healthStatus = healthStatusList.get(i);
+                ps.setInt(1, healthStatus.getHealthStatusId());
+                ps.setInt(2, healthStatus.getCaseId());
+                ps.setString(3, healthStatus.getStatusDate());
+                ps.setString(4, healthStatus.getStatusDescription());
+            }
+
+            @Override
+            public int getBatchSize() {
+                logger.info("Inserted health status list of size : "+healthStatusList.size());
+                return healthStatusList.size();
+            }
+        });
+
+        return healthStatusList.size();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int insertSelfReportSymptomList(List<SelfReportSymptom> selfReportSymptomList, Map<Symptom,Integer> symptomToIdMap) {
+        String sql = "insert into self_report_symptom values(?,?,?,?)";
+
+        writeJdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                SelfReportSymptom selfReportSymptom = selfReportSymptomList.get(i);
+                ps.setInt(1, selfReportSymptom.getSelfReportSymptomId());
+                ps.setInt(2, selfReportSymptom.getEmployeeId());
+                ps.setInt(3, symptomToIdMap.get(selfReportSymptom.getSymptom()));
+                ps.setString(4, selfReportSymptom.getReportedDate());
+            }
+
+            @Override
+            public int getBatchSize() {
+                logger.info("Inserted self reported symptom list of size : "+selfReportSymptomList.size());
+                return selfReportSymptomList.size();
+            }
+        });
+
+        return selfReportSymptomList.size();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ash.pp.codesample.controller;
 
 import com.ash.pp.codesample.model.Employee;
+import com.ash.pp.codesample.model.Symptom;
 import com.ash.pp.codesample.service.ReadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ReadController {
@@ -33,6 +35,26 @@ public class ReadController {
     @GetMapping(value="/getEmployeeById")
     public Employee getEmployeeById(@RequestParam int employeeId) {
         return readService.getEmployeeByEmpId(employeeId);
+    }
+
+    @GetMapping(value="/getSymptomIdMap")
+    public Map<Symptom,Integer> getSymptomIdMap() {
+        return readService.getSymptomIdMap();
+    }
+
+    @GetMapping(value="/getMostSelfReportedSymptom")
+    public String getMostSelfReportedSymptom() {
+        return readService.getMostSelfReportedSymptom();
+    }
+
+    @GetMapping(value="/getMostInfectedFloor")
+    public Integer getMostInfectedFloor() {
+        return readService.getMostInfectedFloor();
+    }
+
+    @GetMapping(value="/commonSymptomsAmongstInfectedEmployees")
+    public List<String> commonSymptomsAmongstInfectedEmployees() {
+        return readService.commonSymptomsAmongstInfectedEmployees();
     }
 
     @GetMapping(value="/printSpiroPoints")

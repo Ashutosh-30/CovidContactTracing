@@ -2,10 +2,12 @@ package com.ash.pp.codesample.service;
 
 import com.ash.pp.codesample.dao.ReadDao;
 import com.ash.pp.codesample.model.Employee;
+import com.ash.pp.codesample.model.Symptom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReadService {
@@ -35,5 +37,21 @@ public class ReadService {
 
     public int getLastPKNotification() {
         return readDao.getLastPKNotification();
+    }
+
+    public Map<Symptom,Integer> getSymptomIdMap() {
+        return readDao.getSymptomIdMap();
+    }
+
+    public String getMostSelfReportedSymptom() {
+        return readDao.getMostReportedSymptom();
+    }
+
+    public Integer getMostInfectedFloor() {
+        return readDao.getMostInfectedFloor();
+    }
+
+    public List<String> commonSymptomsAmongstInfectedEmployees() {
+        return readDao.commonSymptomsAmongstInfectedEmployees();
     }
 }
