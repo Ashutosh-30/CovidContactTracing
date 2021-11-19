@@ -1,5 +1,8 @@
 # PersonalProjects
 
+Consider the following 'barebones' design (showing just entity names and connections), for the contact tracing application:
+![Alt text](./src/main/resources/BareBonesDesignHW2.png?raw=true "ERD")
+
 This is the server code I wrote to help me with my Database Assignment.
 
 Questions Answered:
