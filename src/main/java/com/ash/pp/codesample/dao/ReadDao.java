@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ReadDao {
@@ -192,5 +189,22 @@ public class ReadDao {
         int result = readJdbcTemplate.queryForObject(sql, Integer.class, viewName);
 
         return result == 1;
+    }
+
+    public Map<String,Integer> symptomsOfInfectedEmployeesByFreq() {
+        String sql = "select s.symptom_description, count(srs.symptom_id) as freq\n" +
+                "from self_report_symptom srs\n" +
+                "join symptom s on s.symptom_id = srs.symptom_id\n" +
+                "join positive_employee_ids pei on pei.employee_id = srs.employee_id\n" +
+                "group by s.symptom_description\n" +
+                "order by freq desc;";
+
+        return readJdbcTemplate.query(sql, (ResultSet rs) -> {
+            Map<String,Integer> symptomFreqMap = new LinkedHashMap<>();
+            while(rs.next()) {
+                symptomFreqMap.put(rs.getString("symptom_description"), rs.getInt("freq"));
+            }
+            return symptomFreqMap;
+        });
     }
 }

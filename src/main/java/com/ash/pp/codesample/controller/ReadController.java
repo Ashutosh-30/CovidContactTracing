@@ -57,6 +57,11 @@ public class ReadController {
         return readService.commonSymptomsAmongstInfectedEmployees();
     }
 
+    @GetMapping(value="/symptomsOfInfectedEmployeesByFreq")
+    public Map<String,Integer> symptomsOfInfectedEmployeesByFreq() {
+        return readService.symptomsOfInfectedEmployeesByPercentage();
+    }
+
     @GetMapping(value="/printSpiroPoints")
     public void printSpiroPoints() {
         double R=8.0, r=1.0, a=4.0;
